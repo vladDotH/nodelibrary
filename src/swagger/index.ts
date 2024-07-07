@@ -10,33 +10,6 @@ const doc = {
   },
   host: configService.APP_URL,
   basePath: "/api",
-
-  definitions: {
-    // модель задачи
-    Todo: {
-      id: "1",
-      text: "test",
-      done: false,
-    },
-    // модель массива задач
-    Todos: [
-      {
-        // ссылка на модель задачи
-        $ref: "#/definitions/Todo",
-      },
-    ],
-    // модель объекта с текстом новой задачи
-    Text: {
-      text: "test",
-    },
-    // модель объекта с изменениями существующей задачи
-    Changes: {
-      changes: {
-        text: "test",
-        done: true,
-      },
-    },
-  },
 };
 
 const conrtollersFolder = "src/controllers";
