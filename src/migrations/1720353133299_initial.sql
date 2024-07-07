@@ -1,7 +1,7 @@
 -- Up Migration
 create table "Books"
 (
-    id              int primary key,
+    id              serial primary key,
     title           varchar,
     author          varchar,
     publicationDate date,
@@ -9,7 +9,7 @@ create table "Books"
 );
 create table "Users"
 (
-    id           int primary key,
+    id           serial primary key,
     username     varchar,
     passwordHash varchar,
     rolesMask    int4,
