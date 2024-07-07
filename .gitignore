@@ -2,3 +2,4 @@ dist
 node_modules
 .env
 ts
+src/swagger/swagger.json

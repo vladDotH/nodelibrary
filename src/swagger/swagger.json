@@ -6,24 +6,49 @@
     "version": "1.0.0"
   },
   "host": "localhost:3030",
-  "basePath": "/",
+  "basePath": "/api",
   "schemes": [
     "http"
   ],
   "paths": {
-    "/api-docs/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/books/": {
       "post": {
+        "tags": [
+          "Books"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Name"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "Author"
+                },
+                "publicationDate": {
+                  "type": "string",
+                  "example": "2024-10-08"
+                },
+                "genres": {
+                  "type": "array",
+                  "example": [
+                    "Genre"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -31,6 +56,9 @@
         }
       },
       "get": {
+        "tags": [
+          "Books"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -41,6 +69,9 @@
     },
     "/books/{id}": {
       "get": {
+        "tags": [
+          "Books"
+        ],
         "description": "",
         "parameters": [
           {
@@ -57,6 +88,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Books"
+        ],
         "description": "",
         "parameters": [
           {
@@ -64,6 +98,36 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Name"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "Author"
+                },
+                "publicationDate": {
+                  "type": "string",
+                  "example": "2024-10-08"
+                },
+                "genres": {
+                  "type": "array",
+                  "example": [
+                    "Genre"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -73,6 +137,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Books"
+        ],
         "description": "",
         "parameters": [
           {
@@ -89,28 +156,11 @@
         }
       }
     },
-    "users/register": {
-      "post": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "users/login": {
-      "post": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "users/me": {
+    "/docs/": {
       "get": {
+        "tags": [
+          "Docs"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -119,8 +169,50 @@
         }
       }
     },
-    "users/put/{id}/role": {
+    "/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/put/{id}/role": {
       "put": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "parameters": [
           {
@@ -133,6 +225,58 @@
         "responses": {
           "default": {
             "description": ""
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Todo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1"
+        },
+        "text": {
+          "type": "string",
+          "example": "test"
+        },
+        "done": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "Todos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Todo"
+      }
+    },
+    "Text": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "example": "test"
+        }
+      }
+    },
+    "Changes": {
+      "type": "object",
+      "properties": {
+        "changes": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "example": "test"
+            },
+            "done": {
+              "type": "boolean",
+              "example": true
+            }
           }
         }
       }

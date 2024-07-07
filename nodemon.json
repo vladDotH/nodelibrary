@@ -1,5 +1,7 @@
 {
   "watch": ["src"],
   "ext": "ts,json",
-  "exec": "ts-node -r dotenv-expand/config ./src/main.ts"
+  "exec": "pnpm build:api && ts-node -r dotenv-expand/config ./src/main.ts",
+  "delay": 500,
+  "ignore": ["src/swagger/swagger.json"]
 }
