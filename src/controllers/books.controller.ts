@@ -1,5 +1,9 @@
 import Router from "koa-router";
 import { booksService } from "@/services/books.service";
+import { BookDto } from "@/dto/books";
+import Joi from "joi";
+import { validate } from "@/util/validation";
+import { StatusCodes } from "http-status-codes";
 
 export const booksController = new Router({ prefix: "/books" });
 
@@ -14,22 +18,25 @@ booksController.post("/", async (ctx) => {
       genres: ['Genre']
     }
   }*/
-  const body = ctx.request.body;
-  ctx.body = await booksService.addBook(body as any);
-  ctx.status = 200;
+  const book = validate(BookDto, ctx.request.body);
+  ctx.body = await booksService.addBook(book);
+  ctx.status = StatusCodes.OK;
 });
 
 booksController.get("/", async (ctx) => {
   // #swagger.tags = ['Books']
+  console.log("books");
   ctx.body = await booksService.getBooks();
-  ctx.status = 200;
+  ctx.status = StatusCodes.OK;
 });
 
 booksController.get("/:id", async (ctx) => {
   // #swagger.tags = ['Books']
   // #swagger.parameters['id'] = {}
-  ctx.body = await booksService.getBook(ctx.params.id as any);
-  ctx.status = 200;
+  const id = validate(Joi.number(), ctx.params.id);
+  console.log(id);
+  ctx.body = await booksService.getBook(id);
+  ctx.status = ctx.body ? StatusCodes.OK : StatusCodes.NO_CONTENT;
 });
 
 booksController.put("/:id", async (ctx) => {
@@ -44,16 +51,16 @@ booksController.put("/:id", async (ctx) => {
     genres: ['Genre']
   }
   }*/
-  ctx.body = await booksService.updateBook(
-    ctx.params.id as any,
-    ctx.request.body as any,
-  );
-  ctx.status = 200;
+  const id = validate(Joi.number(), ctx.params.id);
+  const book = validate(BookDto, ctx.request.body);
+  ctx.body = await booksService.updateBook(id, book);
+  ctx.status = ctx.body ? StatusCodes.OK : StatusCodes.NO_CONTENT;
 });
 
 booksController.delete("/:id", async (ctx) => {
   // #swagger.tags = ['Books']
   // #swagger.parameters['id'] = {}
-  ctx.body = await booksService.deleteBook(ctx.params.id as any);
-  ctx.status = 200;
+  const id = validate(Joi.number(), ctx.params.id);
+  ctx.body = await booksService.deleteBook(id);
+  ctx.status = ctx.body ? StatusCodes.OK : StatusCodes.NO_CONTENT;
 });
