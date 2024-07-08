@@ -79,7 +79,7 @@ usersController.put(
   "/put/:id/role",
   authGuard("jwt"),
   rolesGuard(RoleBits.admin),
-  (ctx) => {
+  async (ctx) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Изменить роли пользователя'
     // #swagger.description = 'Роли: администратор'
@@ -92,7 +92,7 @@ usersController.put(
     }*/
     const id = validate(Joi.number(), ctx.params.id);
     const rolesData = validate(RoleChangeDto, ctx.request.body);
-    usersService.changeRoles(id, rolesData.role);
+    ctx.body = await usersService.changeRoles(id, rolesData.role);
     ctx.status = StatusCodes.OK;
   },
 );

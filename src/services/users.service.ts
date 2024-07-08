@@ -125,7 +125,7 @@ async function changeRoles(id: number, roles: number) {
      set "rolesMask" = $1
      where id = $2
      returning *`,
-    [id, roles],
+    [roles, id],
   );
   return (res.rows[0] ?? null) as User | null;
 }
