@@ -47,7 +47,6 @@ booksController.get("/:id", async (ctx) => {
   // #swagger.description = 'Роли: не требуется'
   // #swagger.parameters['id'] = {}
   const id = validate(Joi.number(), ctx.params.id);
-  console.log(id);
   ctx.body = await booksService.getBook(id);
   ctx.status = ctx.body ? StatusCodes.OK : StatusCodes.NO_CONTENT;
 });
