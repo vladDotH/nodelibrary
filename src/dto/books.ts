@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Book } from "@/types/Book";
+import { Book } from "@/types/book";
 
 export const BookDto = Joi.object<Book>({
   title: Joi.string().required(),

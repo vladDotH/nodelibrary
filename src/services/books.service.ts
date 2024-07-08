@@ -1,15 +1,15 @@
-import { Book } from "@/types/Book";
+import { Book } from "@/types/book";
 import { db } from "@/util/db";
 
 async function addBook(book: Book) {
   const res = await db.query(
-    `insert into "Books"(title, author, publicationdate, genres)
+    `insert into "Books"(title, author, "publicationDate", genres)
      values ($1, $2, $3, $4)
      returning *`,
     [book.title, book.author, book.publicationDate, book.genres],
   );
-  console.log(res.rows);
-  return res.rows[0] ?? null;
+
+  return (res.rows[0] ?? null) as Book | null;
 }
 
 async function getBooks() {
@@ -17,8 +17,7 @@ async function getBooks() {
     `select *
      from "Books"`,
   );
-  console.log(res.rows[0].genres);
-  return res.rows;
+  return res.rows as Book[];
 }
 
 async function getBook(id: number) {
@@ -27,7 +26,7 @@ async function getBook(id: number) {
      from "Books" where id = $1`,
     [id],
   );
-  return res.rows[0] ?? null;
+  return (res.rows[0] ?? null) as Book | null;
 }
 
 async function updateBook(id: number, book: Book) {
@@ -35,7 +34,7 @@ async function updateBook(id: number, book: Book) {
     `update "Books"
      set title=$1,
          author=$2,
-         publicationdate=$3,
+         "publicationDate"=$3,
          genres=$4
      where id = $5 returning *`,
     [book.title, book.author, book.publicationDate, book.genres, id],
@@ -51,7 +50,7 @@ async function deleteBook(id: number) {
      RETURNING *`,
     [id],
   );
-  return res.rows[0] ?? null;
+  return (res.rows[0] ?? null) as Book | null;
 }
 
 export const booksService = {
