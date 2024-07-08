@@ -15,7 +15,7 @@ create table "Users"
     "rolesMask"      int4,
     email            varchar unique,
     "emailToken"     varchar,
-    "emailConfirmed" bool,
+    "emailConfirmed" bool
 );
 
 create index Users_username_index on "Users" using hash (username);
