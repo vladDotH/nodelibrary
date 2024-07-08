@@ -1,3 +1,5 @@
+import { RoleBits } from "@/auth/roles";
+
 export interface User {
   id: number;
   username: string;
@@ -5,6 +7,13 @@ export interface User {
   rolesMask: number;
   email?: string;
   emailToken?: string;
+  emailConfirmed?: boolean;
+}
+
+export interface UserIdentifiers {
+  id?: number;
+  username?: string;
+  email?: string;
 }
 
 export interface UserLogin {
@@ -16,4 +25,8 @@ export interface UserCreate {
   username: string;
   password: string;
   email: string;
+}
+
+export interface RoleChangeData {
+  role: number;
 }
