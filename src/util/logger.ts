@@ -10,10 +10,11 @@ export const logger = winston.createLogger({
     winston.format.printf(
       (info) =>
         `[App - ${process.pid}] ` +
-        `${DateTime.fromISO(info.timestamp).toLocaleString({
+        `${DateTime.fromISO(info.timestamp)!.toLocaleString({
           timeStyle: "medium",
           dateStyle: "short",
         })} ` +
+        (info.tag ? `(${info.tag}) ` : "") +
         `${info.level} ` +
         `${info.message}`,
     ),
