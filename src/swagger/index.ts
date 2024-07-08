@@ -9,7 +9,7 @@ const doc = {
     description: "Description",
   },
   host: configService.APP_URL,
-  basePath: "/api",
+  basePath: `/${configService.APP_PREFIX}`,
 };
 
 const conrtollersFolder = "src/controllers";
