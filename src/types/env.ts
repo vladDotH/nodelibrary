@@ -19,6 +19,11 @@ export interface Env {
   SWAGGER_PREFIX: string;
 
   SESSION_SECRET: string;
+  COOKIE_KEY: string;
 
+  MAIL_CONFIRM_URL: string;
+  MAILER_EMAIL: string;
   MAILER_TOKEN: string;
+
+  SALT_ROUNDS: number;
 }

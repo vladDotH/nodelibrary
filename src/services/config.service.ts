@@ -1,4 +1,4 @@
-import { Env } from "@/types/Env";
+import { Env } from "@/types/env";
 
 export const configService = new Proxy(process.env, {
   get(target: any, p: string | symbol): any {
