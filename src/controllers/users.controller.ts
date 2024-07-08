@@ -9,8 +9,9 @@ import { Context } from "koa";
 import Joi from "joi";
 import { rolesGuard } from "@/auth/roles.guard";
 import { RoleBits } from "@/auth/roles";
+import { configService } from "@/services/config.service";
 
-export const usersController = new Router<unknown, Context>({
+export const usersController = new Router({
   prefix: "/users",
 });
 
@@ -26,13 +27,13 @@ usersController.post("/register", async (ctx) => {
   }*/
   const userData = validate(UserCreateDto, ctx.request.body);
   const user = await usersService.createUser(userData);
-  if (!user) throw new BadRequest("user already exists");
+  if (!user) throw BadRequest("user already exists");
   await usersService.sendConfirmationEmail(user);
   ctx.body = user;
   ctx.status = StatusCodes.OK;
 });
 
-usersController.post("/confirm/:token", async (ctx) => {
+usersController.get("/confirm/:token", async (ctx) => {
   // #swagger.tags = ['Users']
   // #swagger.parameters['token'] = {}
   const token = validate(Joi.string(), ctx.params.token);
@@ -42,7 +43,7 @@ usersController.post("/confirm/:token", async (ctx) => {
   ctx.status = StatusCodes.OK;
 });
 
-usersController.post("/login", authGuard("local"), async (ctx) => {
+usersController.post("/login", authGuard("local"), async (ctx: Context) => {
   // #swagger.tags = ['Users']
   /* #swagger.parameters['body'] = {
     in: 'body',
@@ -51,11 +52,17 @@ usersController.post("/login", authGuard("local"), async (ctx) => {
       password: "password",
     }
   }*/
+  const token = await usersService.giveToken(ctx.user);
+  ctx.cookies.set(configService.COOKIE_KEY, token, {
+    maxAge: +configService.JWT_EXPIRES,
+    httpOnly: true,
+    signed: true,
+  });
   ctx.body = ctx.user;
   ctx.status = StatusCodes.OK;
 });
 
-usersController.get("/me", authGuard("jwt"), (ctx) => {
+usersController.get("/me", authGuard("jwt"), (ctx: Context) => {
   // #swagger.tags = ['Users']
   ctx.body = ctx.user;
   ctx.status = StatusCodes.OK;

@@ -7,7 +7,7 @@ export function rolesGuard(...roles: RoleBits[]) {
   const mask = sum(roles.map((r) => 1 << r));
   return (ctx: Context, next: Next) => {
     if (!ctx.user || !(ctx.user.rolesMask & mask)) {
-      throw new Unauthorized();
+      throw Unauthorized();
     }
     return next();
   };

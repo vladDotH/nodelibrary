@@ -20,6 +20,7 @@ export interface Env {
 
   SESSION_SECRET: string;
   COOKIE_KEY: string;
+  JWT_EXPIRES: string;
 
   MAIL_CONFIRM_URL: string;
   MAILER_EMAIL: string;

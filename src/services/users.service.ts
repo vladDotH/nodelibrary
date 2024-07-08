@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 import { configService } from "@/services/config.service";
 import { role, RoleBits } from "@/auth/roles";
 import { mailerService } from "@/services/mailer.service";
-import uuid from "uuid";
+import * as uuid from "uuid";
+import jwt from "jsonwebtoken";
 
 function hashUserPassword(pwd: string) {
   return bcrypt.hash(pwd, +configService.SALT_ROUNDS);
@@ -22,7 +23,7 @@ async function createUser(user: UserCreate) {
     `insert into "Users" (username, "passwordHash", "rolesMask", email)
      values ($1, $2, $3, $4)
      returning *`,
-    [user.username, hash, role(RoleBits.admin), user.email],
+    [user.username, hash, role(RoleBits.user), user.email],
   );
 
   return res.rows[0] as User;
@@ -37,6 +38,8 @@ async function sendConfirmationEmail(user: User) {
      where id = $2`,
     [token, user.id],
   );
+
+  const url = `${configService.APP_URL_FULL}/${configService.MAIL_CONFIRM_URL}/${token}`;
   await mailerService.send({
     to: user.email,
     subject: "Подтверждение почтового адреса",
@@ -46,13 +49,13 @@ async function sendConfirmationEmail(user: User) {
       </header>
       <p>
         Для подтверждения почты перейдите по адресу
-        <a>
-          ${configService.APP_URL_FULL}/${configService.MAIL_CONFIRM_URL}/${token}
+        <a href="${url}">
+          ${url}
         </a>
       </p>
       <footer>
-        --
-        Сообщение отправлено автоматически.
+        <hr>
+        <p>PS. Сообщение отправлено автоматически.</p>
       </footer>
     `,
   });
@@ -61,20 +64,28 @@ async function sendConfirmationEmail(user: User) {
 
 async function confirmEmail(token: string) {
   const conn = await db.connect();
-  await conn.query("begin");
-  const res = await conn.query(
-    `select * from "Users" where "emailToken" = $1`,
-    [token],
-  );
-  const user = res.rows[0] as User | undefined;
-  if (user) {
-    await db.query(`update "Users" set "emailConfirmed" = true where id=$1`, [
-      user.id,
-    ]);
+  try {
+    await conn.query("begin");
+    const res = await conn.query(
+      `select *
+       from "Users"
+       where "emailToken" = $1`,
+      [token],
+    );
+    const user = res.rows[0] as User | undefined;
+    if (user) {
+      await db.query(
+        `update "Users"
+                      set "emailConfirmed" = true
+                      where id = $1`,
+        [user.id],
+      );
+    }
+    await conn.query("commit");
+    return user ?? null;
+  } finally {
+    await conn.release();
   }
-  await conn.query("commit");
-
-  return user ?? null;
 }
 
 async function loginUser(user: UserLogin) {
@@ -87,6 +98,12 @@ async function loginUser(user: UserLogin) {
     return null;
   }
   return res;
+}
+
+async function giveToken(user: User) {
+  return jwt.sign({ id: user.id }, configService.SESSION_SECRET, {
+    expiresIn: +configService.JWT_EXPIRES,
+  });
 }
 
 async function getUser(id: UserIdentifiers) {
@@ -117,6 +134,7 @@ export const usersService = {
   hashUserPassword,
   compareUserPassword,
   loginUser,
+  giveToken,
   createUser,
   getUser,
   changeRoles,
