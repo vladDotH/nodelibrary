@@ -7,17 +7,7 @@ import bodyParser from "koa-bodyparser";
 
 const app = new Koa();
 
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (err) {
-    logger.error(err.message);
-    logger.verbose(err.stack?.toString());
-    ctx.status = err.status ?? 500;
-    ctx.body = err.message;
-  }
-});
-
+app.use(errorsHandler);
 app.use(bodyParser());
 
 app.use(apiController.routes());
