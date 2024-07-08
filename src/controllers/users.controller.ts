@@ -17,6 +17,8 @@ export const usersController = new Router({
 
 usersController.post("/register", async (ctx) => {
   // #swagger.tags = ['Users']
+  // #swagger.summary = 'Зарегистрироваться в системе'
+  // #swagger.description = 'Роли: не требуется'
   /* #swagger.parameters['body'] = {
     in: 'body',
     schema: {
@@ -35,6 +37,8 @@ usersController.post("/register", async (ctx) => {
 
 usersController.get("/confirm/:token", async (ctx) => {
   // #swagger.tags = ['Users']
+  // #swagger.summary = 'Подтвердить почту по токену'
+  // #swagger.description = 'Роли: не требуется'
   // #swagger.parameters['token'] = {}
   const token = validate(Joi.string(), ctx.params.token);
   const res = await usersService.confirmEmail(token);
@@ -45,6 +49,7 @@ usersController.get("/confirm/:token", async (ctx) => {
 
 usersController.post("/login", authGuard("local"), async (ctx: Context) => {
   // #swagger.tags = ['Users']
+  // #swagger.summary = 'Войти в систему'
   /* #swagger.parameters['body'] = {
     in: 'body',
     schema: {
@@ -64,6 +69,8 @@ usersController.post("/login", authGuard("local"), async (ctx: Context) => {
 
 usersController.get("/me", authGuard("jwt"), (ctx: Context) => {
   // #swagger.tags = ['Users']
+  // #swagger.summary = 'Получить текущего пользователя'
+  // #swagger.description = 'Роли: пользователь, администратор'
   ctx.body = ctx.user;
   ctx.status = StatusCodes.OK;
 });
@@ -74,6 +81,8 @@ usersController.put(
   rolesGuard(RoleBits.admin),
   (ctx) => {
     // #swagger.tags = ['Users']
+    // #swagger.summary = 'Изменить роли пользователя'
+    // #swagger.description = 'Роли: администратор'
     // #swagger.parameters['id'] = {}
     /* #swagger.parameters['body'] = {
       in: 'body',
