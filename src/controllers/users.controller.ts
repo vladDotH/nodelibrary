@@ -57,7 +57,7 @@ usersController.post("/login", authGuard("local"), async (ctx: Context) => {
       password: "password",
     }
   }*/
-  const token = await usersService.giveToken(ctx.user);
+  const token = await usersService.giveToken(ctx.user!);
   ctx.cookies.set(configService.COOKIE_KEY, token, {
     maxAge: +configService.JWT_EXPIRES,
     httpOnly: true,
