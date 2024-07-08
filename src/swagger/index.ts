@@ -10,6 +10,7 @@ const doc = {
   },
   host: configService.APP_URL,
   basePath: `/${configService.APP_PREFIX}`,
+  schemes: [configService.PROTOCOL],
 };
 
 const conrtollersFolder = "src/controllers";
