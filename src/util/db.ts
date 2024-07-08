@@ -13,6 +13,6 @@ export const db = new Pool({
   idleTimeoutMillis: configService.DB_IDLE_TIMEOUT,
   connectionTimeoutMillis: configService.DB_CONN_TIMEOUT,
   log: (messages) => {
-    logger.debug(messages);
+    logger.debug(messages, { tag: "DB" });
   },
 });
